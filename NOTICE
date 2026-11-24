@@ -1,0 +1,12 @@
+TERM-LM
+Copyright 2026 Husaini Holding
+
+TERM-LM is based on Herdr 0.9.5 (https://github.com/herdrdev/herdr/tree/v0.9.5),
+licensed under the Apache License, Version 2.0. Herdr was developed by
+Ogulcan Celik and the Herdr contributors. Husaini Holding modified the
+original code and assets, including branding and distribution.
+The bundled "done" and "request" notification sounds come from Herdr.
+
+Vendored components (libghostty-vt, portable-pty) retain their own licenses
+under vendor/ in the source tree. The macOS installer includes third-party
+notices in /usr/local/share/doc/term-lm.

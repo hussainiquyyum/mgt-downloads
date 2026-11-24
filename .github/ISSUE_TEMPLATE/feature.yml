@@ -1,0 +1,19 @@
+name: Feature request
+description: Describe a workflow TERM-LM could support better.
+title: "Request: "
+body:
+  - type: markdown
+    attributes:
+      value: "Reports are public. Use examples you can share publicly."
+  - type: textarea
+    id: goal
+    attributes:
+      label: What are you trying to do?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like TERM-LM to do?
+    validations:
+      required: true

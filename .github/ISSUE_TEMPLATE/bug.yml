@@ -1,0 +1,30 @@
+name: Bug report
+description: Report a problem you encountered in TERM-LM.
+title: "Bug: "
+body:
+  - type: markdown
+    attributes:
+      value: "Reports are public. Remove credentials, private prompts, repository contents, and sensitive terminal output."
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      value: |
+        TERM-LM version:
+        macOS version and architecture:
+        Terminal:
+        Agent CLI and version, if relevant:
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and observed behavior
+    validations:
+      required: true
