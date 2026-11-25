@@ -4,7 +4,9 @@ TERM-LM gives you one terminal workspace for coding agents, shells, tests, and l
 
 ## Install and start
 
-1. Download the latest macOS `.pkg` from [TERM-LM Releases](https://github.com/hussainiquyyum/term-lm-downloads/releases). The same package supports Apple Silicon and Intel. Check the release notes for supported macOS versions.
+Check [TERM-LM Releases](https://github.com/hussainiquyyum/term-lm-downloads/releases) for a published macOS beta. If GitHub shows an empty Releases page, the installer is still pending.
+
+1. Open the published beta release and download the macOS `.pkg` under **Assets**. The same package supports Apple Silicon and Intel. Check the release notes for supported macOS versions.
 2. To check the download, save the published `SHA256SUMS` next to the package and run `shasum -a 256 -c SHA256SUMS` from that folder. Open the package in Finder and follow macOS Installer. It installs `term-lm` in `/usr/local/bin`.
 3. Open Terminal. Run `term-lm --version` to verify the install. If your shell cannot find it, try `/usr/local/bin/term-lm --version`, then add `/usr/local/bin` to your shell’s PATH.
 4. Change into a project directory and run `term-lm`. Use a small test project for your first session.
