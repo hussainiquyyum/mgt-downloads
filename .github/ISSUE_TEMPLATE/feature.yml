@@ -1,5 +1,5 @@
 name: Feature request
-description: Describe a workflow TERM-LM could support better.
+description: Describe a workflow MGT could support better.
 title: "Request: "
 body:
   - type: markdown
@@ -14,6 +14,6 @@ body:
   - type: textarea
     id: proposal
     attributes:
-      label: What would you like TERM-LM to do?
+      label: What would you like MGT to do?
     validations:
       required: true

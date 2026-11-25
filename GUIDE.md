@@ -1,10 +1,10 @@
-# TERM-LM macOS beta guide
+# MGT macOS beta guide
 
-TERM-LM gives you one terminal workspace for coding agents, shells, tests, and logs. A background server keeps your panes running when you detach. The sidebar shows activity for recognized agent CLIs so you can see when a pane is working or needs input.
+Multi-Agent Grid Terminal (MGT) gives you one terminal workspace for coding agents, shells, tests, and logs. A background server keeps your panes running when you detach. The sidebar shows activity for recognized agent CLIs so you can see when a pane is working or needs input.
 
 ## Install and start
 
-Check [TERM-LM Releases](https://github.com/hussainiquyyum/term-lm-downloads/releases) for a published macOS beta. If GitHub shows an empty Releases page, the installer is still pending.
+Check [MGT Releases](https://github.com/hussainiquyyum/mgt-downloads/releases) for a published macOS beta. The v0.1.0 installer appears under **Assets** as `TERM-LM-0.1.0-macos.pkg`.
 
 1. Open the published beta release and download the macOS `.pkg` under **Assets**. The same package supports Apple Silicon and Intel. Check the release notes for supported macOS versions.
 2. To check the download, save the published `SHA256SUMS` next to the package and run `shasum -a 256 -c SHA256SUMS` from that folder. Open the package in Finder and follow macOS Installer. It installs `term-lm` in `/usr/local/bin`.
@@ -17,7 +17,7 @@ A **workspace** groups panes for a project. A **tab** gives you another pane lay
 
 Use separate panes for an agent and a test runner, or run two agents side by side. Choose your provider, account, and model in the agent CLI. Install and sign in to each CLI separately. For example, run `claude` in one pane and `codex` in another.
 
-**Working** indicates observed activity, **Blocked** means TERM-LM detected a question or approval, and **Done** or **Idle** indicates a settled state. **Unknown** means TERM-LM could not classify the state. Read the pane to confirm an answer or approval prompt. To detach, close the Terminal window or press `Ctrl+B`, then `q`. Run `term-lm` again to reattach.
+**Working** indicates observed activity, **Blocked** means MGT detected a question or approval, and **Done** or **Idle** indicates a settled state. **Unknown** means MGT could not classify the state. Read the pane to confirm an answer or approval prompt. To detach, close the Terminal window or press `Ctrl+B`, then `q`. Run `term-lm` again to reattach.
 
 ## Pass work between two agents
 
@@ -57,6 +57,6 @@ If startup pauses for sign-in or an approval, focus that pane and inspect the pr
 
 ## Update and give feedback
 
-Detach, download the next signed package from [TERM-LM Releases](https://github.com/hussainiquyyum/term-lm-downloads/releases), and install it over the previous version. Reopen TERM-LM and confirm the version with `term-lm --version`. Save in-progress work before restarting a background server if TERM-LM asks you to do so.
+Detach, download the next signed package from [MGT Releases](https://github.com/hussainiquyyum/mgt-downloads/releases), and install it over the previous version. Reopen MGT and confirm the version with `term-lm --version`. Save in-progress work before restarting a background server if MGT asks you to do so.
 
-Use [GitHub Issues](https://github.com/hussainiquyyum/term-lm-downloads/issues/new/choose) for bugs and feature requests. For bugs, include the TERM-LM version, macOS version and architecture, terminal and agent CLI version, steps to reproduce, and what you expected and observed. Issues are public. Remove credentials, private prompts, repository contents, and sensitive terminal output.
+Use [GitHub Issues](https://github.com/hussainiquyyum/mgt-downloads/issues/new/choose) for bugs and feature requests. For bugs, include the MGT version, macOS version and architecture, terminal and agent CLI version, steps to reproduce, and what you expected and observed. Issues are public. Remove credentials, private prompts, repository contents, and sensitive terminal output.

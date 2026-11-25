@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a problem you encountered in TERM-LM.
+description: Report a problem you encountered in MGT.
 title: "Bug: "
 body:
   - type: markdown
@@ -10,7 +10,7 @@ body:
     attributes:
       label: Environment
       value: |
-        TERM-LM version:
+        MGT version:
         macOS version and architecture:
         Terminal:
         Agent CLI and version, if relevant:

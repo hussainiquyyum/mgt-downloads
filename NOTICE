@@ -1,7 +1,7 @@
-TERM-LM
+Multi-Agent Grid Terminal
 Copyright 2026 Husaini Holding
 
-TERM-LM is based on Herdr 0.9.5 (https://github.com/herdrdev/herdr/tree/v0.9.5),
+MGT is based on Herdr 0.9.5 (https://github.com/herdrdev/herdr/tree/v0.9.5),
 licensed under the Apache License, Version 2.0. Herdr was developed by
 Ogulcan Celik and the Herdr contributors. Husaini Holding modified the
 original code and assets, including branding and distribution.
