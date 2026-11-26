@@ -11,11 +11,17 @@ Check [MGT Releases](https://github.com/hussainiquyyum/mgt-downloads/releases) f
 3. Open Terminal. Run `mgt --version` to verify the install. If your shell already has an unrelated `mgt` command, try `mgt-lm --version`. Verify that the output starts with **Multi-Agent Grid Terminal**. You can always run `/usr/local/bin/term-lm --version`.
 4. Change into a project directory and run `mgt`. Use the command that reported the MGT version wherever this guide shows `mgt`. Use a small test project for your first session.
 
+## Install and launch an agent
+
+Choose **Start Agent** during first-run setup or from the app menu. Choose Claude Code, Codex, GitHub Copilot CLI, or Pi. For a missing agent, review and approve the vendor installer. Pi setup also installs a user-local Node.js runtime if needed. After installation, MGT asks separately whether to launch the agent in a new tab. Follow the agent’s prompts to sign in and choose a model or provider.
+
+Open **Settings → Integrations** after your first agent launch to install or update the MGT integration. This enables agent session features and Token Economizer for the four supported agents. Token Economizer needs Python 3.10 or later on PATH. It learns locally from repeated command failures and gives later sessions short repository hints. In Codex, review the hook with `/hooks` and restart Codex to start learning. Use **Settings → Token Economizer → Off** to stop learning and hint injection.
+
 ## Workspaces and panes
 
 A **workspace** groups panes for a project. A **tab** gives you another pane layout in the same workspace. A **pane** is a terminal that can run an agent CLI or an ordinary command. Click a pane to focus it, right-click for layout actions, and drag the border between panes to resize them. For keyboard shortcuts, press `Ctrl+B`, release it, then press `?`.
 
-Use separate panes for an agent and a test runner, or run two agents side by side. Choose your provider, account, and model in the agent CLI. Install and sign in to each CLI separately. For example, run `claude` in one pane and `codex` in another.
+Use separate panes for an agent and a test runner, or run two agents side by side. Choose your provider, account, and model in the agent CLI. You can also start an installed CLI by typing its name in a pane. For example, run `claude` in one pane and `codex` in another.
 
 **Working** indicates observed activity, **Blocked** means MGT detected a question or approval, and **Done** or **Idle** indicates a settled state. **Unknown** means MGT could not classify the state. Read the pane to confirm an answer or approval prompt. To detach, close the Terminal window or press `Ctrl+B`, then `q`. Run `mgt` again to reattach.
 

@@ -10,3 +10,7 @@ The bundled "done" and "request" notification sounds come from Herdr.
 Vendored components (libghostty-vt, portable-pty) retain their own licenses
 under vendor/ in the source tree. The macOS installer includes third-party
 notices in /usr/local/share/doc/term-lm.
+
+The macOS beta bundles the Microsoft TokenEconomizer v0.1.0 Python runtime
+(https://github.com/microsoft/TokenEconomizer/releases/tag/v0.1.0), licensed
+under the Apache License, Version 2.0. MGT supplies its own integration hooks.
