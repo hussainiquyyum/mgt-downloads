@@ -1,0 +1,121 @@
+name: Verify MGT 0.1.2 macOS installer
+on:
+  push:
+    branches:
+      - codex/mgt-v0-1-2-release-check-*
+permissions:
+  contents: write
+jobs:
+  package:
+    name: ${{ matrix.arch }} · ${{ matrix.mode }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [fresh, upgrade]
+        arch: [arm64, x86_64]
+        include:
+          - arch: arm64
+            runner: macos-15
+          - arch: x86_64
+            runner: macos-15-intel
+    steps:
+      - name: Download and verify the draft assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/candidate" "$RUNNER_TEMP/legacy"
+          gh release download v0.1.2 --repo "$GITHUB_REPOSITORY" --dir "$RUNNER_TEMP/candidate"
+          gh release download v0.1.1 --repo "$GITHUB_REPOSITORY" --dir "$RUNNER_TEMP/legacy"
+          (cd "$RUNNER_TEMP/candidate" && shasum -a 256 -c SHA256SUMS)
+          (cd "$RUNNER_TEMP/legacy" && shasum -a 256 -c SHA256SUMS)
+          pkg="$RUNNER_TEMP/candidate/MGT-0.1.2-macos.pkg"
+          digest="$(shasum -a 256 "$pkg" | awk '{print $1}')"
+          jq -e --arg digest "$digest" '. == {version:"0.1.2",endpoint_generation:1,package:"MGT-0.1.2-macos.pkg",sha256:$digest}' "$RUNNER_TEMP/candidate/mgt-update.json"
+          pkgutil --check-signature "$pkg"
+          pkgutil --expand-full "$pkg" "$RUNNER_TEMP/expanded"
+          bin="$(find "$RUNNER_TEMP/expanded" -path '*/usr/local/bin/term-lm' -type f)"
+          lipo "$bin" -verify_arch arm64 x86_64
+          xcrun vtool -arch arm64 -show-build "$bin"
+          xcrun vtool -arch x86_64 -show-build "$bin"
+          xcrun stapler validate "$pkg"
+          spctl --assess --type install "$pkg"
+      - name: Install and check the exact package
+        env:
+          TEST_ARCH: ${{ matrix.arch }}
+          TEST_MODE: ${{ matrix.mode }}
+        run: |
+          set -euo pipefail
+          test "$(uname -m)" = "$TEST_ARCH"
+          sw_vers
+          pkg="$RUNNER_TEMP/candidate/MGT-0.1.2-macos.pkg"
+          command=/usr/local/bin/term-lm
+          test ! -e "$command"
+          sudo mkdir -p /usr/local/bin
+          config="$(mktemp -d /tmp/mgt.XXXXXX)"
+          export XDG_CONFIG_HOME="$config/c"
+          export XDG_STATE_HOME="$config/s"
+          export TERMLM_CONFIG_PATH="$config/config.toml"
+          printf '%s\n' 'onboarding = false' '[update]' 'version_check = false' 'manifest_check = false' > "$TERMLM_CONFIG_PATH"
+          cp "$TERMLM_CONFIG_PATH" "$config/before.toml"
+          check_updater() {
+            local version="$1" update_output status
+            if update_output="$("$command" update 2>&1)"; then
+              grep -Fx "MGT $version is up to date." <<<"$update_output"
+            else
+              printf '%s\n' "$update_output"
+              status="$(curl --disable -sSL --max-time 10 -D "$config/feed-headers" -o "$config/feed-response" -w '%{http_code}' 'https://api.github.com/repos/hussainiquyyum/mgt-downloads/releases?per_page=100')"
+              printf 'Public GitHub release feed returned HTTP %s\n' "$status"
+              if [[ "$status" == 403 || "$status" == 429 ]] && grep -qi 'rate limit' "$config/feed-response"; then
+                grep -F 'Check https://github.com/hussainiquyyum/mgt-downloads/releases' <<<"$update_output"
+                echo 'GitHub throttled the anonymous request and MGT correctly displayed the release link.'
+              elif [[ "$status" == 200 ]]; then
+                "$command" update | grep -Fx "MGT $version is up to date."
+              else
+                exit 1
+              fi
+            fi
+          }
+          if [[ "$TEST_MODE" == upgrade ]]; then
+            sudo installer -pkg "$RUNNER_TEMP/legacy/MGT-0.1.1-macos.pkg" -target /
+            "$command" --version | grep -Fx 'Multi-Agent Grid Terminal 0.1.1'
+            check_updater 0.1.1
+            old_digest="$(shasum -a 256 "$command" | awk '{print $1}')"
+            "$command" --session verify server > "$config/server.log" 2>&1 &
+            legacy_pid=$!
+            trap 'kill -TERM "$legacy_pid" 2>/dev/null || true' EXIT
+            for _ in {1..40}; do
+              if "$command" --session verify pane list > "$config/panes.json" 2>/dev/null; then
+                break
+              fi
+              sleep 0.25
+            done
+            if ! "$command" --session verify pane list; then
+              cat "$config/server.log"
+              exit 1
+            fi
+            "$command" --session verify workspace create --cwd "$config"
+            "$command" --session verify pane list > "$config/before-panes.json"
+            jq -e '.result.panes | length > 0' "$config/before-panes.json"
+          elif [[ "$TEST_ARCH" == arm64 ]]; then
+            test ! -e /usr/local/bin/mgt
+            printf '%s\n' '#!/bin/sh' 'echo unrelated-launcher' | sudo tee /usr/local/bin/mgt > /dev/null
+            sudo chmod 755 /usr/local/bin/mgt
+          fi
+          sudo installer -pkg "$pkg" -target /
+          pkgutil --pkg-info com.husainiholding.term-lm | grep -Fx 'version: 0.1.2'
+          "$command" --version | grep -Fx 'Multi-Agent Grid Terminal 0.1.2'
+          cmp "$TERMLM_CONFIG_PATH" "$config/before.toml"
+          if [[ "$TEST_MODE" == upgrade ]]; then
+            test "$(shasum -a 256 "$command.pre-mgt" | awk '{print $1}')" = "$old_digest"
+            kill -0 "$legacy_pid"
+            "$command" --session verify pane list > "$config/after-panes.json"
+            jq -e --slurp '.[0].result.panes | length > 0' "$config/after-panes.json"
+            diff <(jq -S '[.result.panes[].pane_id]' "$config/before-panes.json") <(jq -S '[.result.panes[].pane_id]' "$config/after-panes.json")
+          elif [[ "$TEST_ARCH" == arm64 ]]; then
+            /usr/local/bin/mgt | grep -Fx unrelated-launcher
+            /usr/local/bin/mgt-lm --version | grep -Fx 'Multi-Agent Grid Terminal 0.1.2'
+          fi
+          check_updater 0.1.2
