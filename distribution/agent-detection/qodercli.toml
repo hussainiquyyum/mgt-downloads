@@ -1,4 +1,4 @@
-# Based on Herdr 0.9.5 (Apache-2.0). Husaini Holding modified this published copy for TERM-LM.
+# Based on Herdr 0.9.5 (Apache-2.0). Husaini Holding modified this published copy for MGT.
 id = "qodercli"
 version = "2026.06.10.1"
 min_engine_version = 1
